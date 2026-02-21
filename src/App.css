@@ -1,0 +1,254 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.navbar-modern {
+  box-shadow: 0 2px 8px rgba(217, 160, 58, 0.1);
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+}
+
+.card:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-6px);
+}
+
+.btn-primary {
+  background-color: #1a1a1a !important;
+  border-color: #1a1a1a !important;
+}
+
+.btn-primary:hover {
+  background-color: #0d0d0d !important;
+  border-color: #0d0d0d !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+.btn-secondary {
+  background-color: #d0d0d0 !important;
+  color: #2a2a2a !important;
+  border-color: #d0d0d0 !important;
+}
+
+.btn-secondary:hover {
+  background-color: #b8b8b8 !important;
+  border-color: #b8b8b8 !important;
+}
+
+.btn-outline-secondary {
+  color: #2a2a2a !important;
+  border-color: #d0d0d0 !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #1a1a1a !important;
+  border-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.btn-danger {
+  background-color: #e74c3c !important;
+  border-color: #e74c3c !important;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b !important;
+  border-color: #c0392b !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 1.5rem;
+}
+
+.alert-info {
+  background-color: #e8f4f8 !important;
+  border-color: #a8d5e8 !important;
+  color: #4a4a4a !important;
+}
+
+.alert-success {
+  background-color: #e6f5e6 !important;
+  border-color: #a8d8a8 !important;
+  color: #2d5a2d !important;
+}
+
+.alert-danger {
+  background-color: #f8e8e8 !important;
+  border-color: #e8a8a8 !important;
+  color: #5a2d2d !important;
+}
+
+.badge {
+  background-color: #1a1a1a !important;
+  font-weight: 600;
+}
+
+form {
+  background-color: #f5f5f5;
+}
+
+/* Product image hover effects */
+.product-image {
+  transition:
+    filter 0.3s ease,
+    brightness 0.3s ease;
+  filter: brightness(0.9);
+  cursor: pointer;
+}
+
+.product-image:hover {
+  filter: brightness(0.9);
+}
+
+.product-image-container:hover {
+  background-color: #222;
+}
+
+.product-image-container {
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+}
+
+input,
+textarea,
+select {
+  border-color: #e8e8e8 !important;
+  border-radius: 8px !important;
+}
+/* Home hero background */
+.home-hero {
+  position: relative;
+  background-image: url("https://source.unsplash.com/1600x900/?clothes,wardrobe,retail");
+  background-size: cover;
+  background-position: center;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+}
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(255, 250, 245, 0.35),
+    rgba(255, 250, 245, 0.35)
+  );
+  pointer-events: none;
+}
+.home-hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+.home-hero {
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #d9a03a !important;
+  box-shadow: 0 0 0 3px rgba(217, 160, 58, 0.1) !important;
+}
+.glitter-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+.glitter-dot {
+  position: absolute;
+  top: -6%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 245, 200, 0.95),
+    rgba(217, 160, 58, 0.9)
+  );
+  border-radius: 50%;
+  box-shadow:
+    0 6px 20px rgba(217, 160, 58, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-10vh) translateX(0);
+  animation-name: glitter-fall, glitter-sway, glitter-shimmer;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+.glitter-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  filter: blur(4px);
+  opacity: 0.7;
+}
+
+@keyframes glitter-fall {
+  0% {
+    transform: translateY(-10vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120vh);
+    opacity: 0;
+  }
+}
+
+@keyframes glitter-sway {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(var(--sway, 20px));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes glitter-shimmer {
+  0% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.6) saturate(1.1);
+  }
+  100% {
+    filter: brightness(1) saturate(1);
+  }
+}
+
+/* make sure dots use both fall and sway by composing durations via comma */
+.glitter-dot {
+  animation-duration:
+    var(--duration, 9s), calc(var(--duration, 9s) / 2), var(--duration, 4s);
+  animation-delay: var(--delay, 0s), var(--delay, 0s), var(--delay, 0s);
+}
