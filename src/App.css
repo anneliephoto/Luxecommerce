@@ -5,7 +5,58 @@
 }
 
 .navbar-modern {
+  background-color: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(64, 64, 64, 0.4);
   box-shadow: 0 2px 8px rgba(217, 160, 58, 0.1);
+}
+
+.brand-modern {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  letter-spacing: 0.01em;
+}
+
+.brand-modern:hover,
+.brand-modern:focus {
+  color: #f5f1e8 !important;
+}
+
+.nav-modern {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-link-modern {
+  color: #e8e8e8 !important;
+  font-weight: 500;
+}
+
+.nav-link-modern:hover,
+.nav-link-modern:focus {
+  color: #ffffff !important;
+}
+
+.cart-count-modern {
+  margin-left: 0.5rem;
+}
+
+.navbar-modern .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.navbar-modern .navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(217, 160, 58, 0.35);
+}
+
+@media (max-width: 767.98px) {
+  .nav-modern {
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-top: 0.75rem;
+  }
 }
 
 .card {

@@ -1,13 +1,17 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Container, Card, Button, Spinner, Alert } from "react-bootstrap";
 import ConfirmModal from "../components/ConfirmModal";
-import { CartContext } from "../context/CartContext";
+import { addToCart } from "../store/cartSlice";
+
+const FALLBACK_IMAGE = "https://via.placeholder.com/300x300?text=No+Image";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +19,6 @@ export default function ProductDetails() {
   const [deleteError, setDeleteError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [added, setAdded] = useState(false);
-  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     let mounted = true;
@@ -94,14 +97,13 @@ export default function ProductDetails() {
           <Button
             variant="primary"
             onClick={() => {
-              addToCart(
-                {
+              dispatch(
+                addToCart({
                   id: product.id,
                   title: product.title,
                   price: product.price,
                   image: product.image,
-                },
-                1,
+                }),
               );
               setAdded(true);
               setTimeout(() => setAdded(false), 2000);
@@ -129,6 +131,10 @@ export default function ProductDetails() {
               src={product.image}
               alt={product.title}
               style={{ maxWidth: "100%", maxHeight: 320, objectFit: "contain" }}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = FALLBACK_IMAGE;
+              }}
             />
           </div>
           <div className="col-md-8">

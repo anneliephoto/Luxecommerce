@@ -1,28 +1,171 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
+import { addToCart } from "../store/cartSlice";
+
+const FALLBACK_IMAGE = "https://via.placeholder.com/300x300?text=No+Image";
+
+function fetchAllProducts() {
+  return axios.get("https://fakestoreapi.com/products").then((res) => res.data);
+}
+
+function fetchCategories() {
+  return axios
+    .get("https://fakestoreapi.com/products/categories")
+    .then((res) => res.data);
+}
+
+function fetchProductsByCategory(category) {
+  return axios
+    .get(`https://fakestoreapi.com/products/category/${encodeURIComponent(category)}`)
+    .then((res) => res.data);
+}
 
 export default function Home() {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    isError: categoriesError,
+    error: categoriesErrorObj,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+
+  const {
+    data: products = [],
+    isLoading: productsLoading,
+    isError: productsError,
+    error: productsErrorObj,
+  } = useQuery({
+    queryKey:
+      selectedCategory === "all"
+        ? ["products", "all"]
+        : ["products", "category", selectedCategory],
+    queryFn: () =>
+      selectedCategory === "all"
+        ? fetchAllProducts()
+        : fetchProductsByCategory(selectedCategory),
+  });
 
   return (
     <div className="home-hero">
       <Container className="py-5">
-        <Row className="justify-content-center">
-          <Col md={8} lg={6}>
-            <Card className="text-center shadow-sm">
-              <Card.Body>
-                <Card.Title as="h1">Welcome to FakeStore</Card.Title>
-                <Card.Text className="my-3">
-                  Discover a curated selection of products at great prices.
-                  Browse our catalog to find items you'll love — from everyday
-                  essentials to unique finds.
-                </Card.Text>
-                <Button variant="primary" onClick={() => navigate("/products")}>
-                  View Products
-                </Button>
-              </Card.Body>
-            </Card>
+        <Row className="justify-content-center mb-4">
+          <Col lg={10}>
+            <h1 className="mb-3">FakeStore Product Catalog</h1>
+            <p className="mb-3">
+              Browse products by category and add items to your shopping cart.
+            </p>
+
+            <Form.Group className="mb-4" controlId="categoryFilter">
+              <Form.Label>Filter by Category</Form.Label>
+              <Form.Select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                disabled={categoriesLoading}
+              >
+                <option value="all">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            {categoriesError && (
+              <Alert variant="danger" className="mb-4">
+                {categoriesErrorObj?.message || "Failed to load categories."}
+              </Alert>
+            )}
+
+            {productsLoading && (
+              <div className="text-center py-4">
+                <Spinner animation="border" role="status" />
+              </div>
+            )}
+
+            {productsError && (
+              <Alert variant="danger">
+                {productsErrorObj?.message || "Failed to load products."}
+              </Alert>
+            )}
+
+            {!productsLoading && !productsError && (
+              <Row className="g-4">
+                {products.map((product) => (
+                  <Col key={product.id} xs={12} sm={6} lg={4}>
+                    <Card className="h-100 shadow-sm">
+                      <div
+                        className="product-image-container d-flex align-items-center justify-content-center p-3"
+                        style={{ height: 220 }}
+                      >
+                        <Card.Img
+                          className="product-image"
+                          variant="top"
+                          src={product.image}
+                          alt={product.title}
+                          style={{ maxHeight: "100%", objectFit: "contain" }}
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = FALLBACK_IMAGE;
+                          }}
+                        />
+                      </div>
+                      <Card.Body className="d-flex flex-column">
+                        <Card.Title className="fs-6" title={product.title}>
+                          {product.title}
+                        </Card.Title>
+                        <Card.Text className="mb-1">
+                          <strong>Category:</strong> {product.category}
+                        </Card.Text>
+                        <Card.Text className="mb-1">
+                          <strong>Price:</strong> ${Number(product.price || 0).toFixed(2)}
+                        </Card.Text>
+                        <Card.Text className="mb-2">
+                          <strong>Rate:</strong>{" "}
+                          {product.rating?.rate ?? "N/A"}
+                        </Card.Text>
+                        <Card.Text className="small text-muted mb-3">
+                          {product.description}
+                        </Card.Text>
+                        <Button
+                          className="mt-auto"
+                          variant="primary"
+                          onClick={() =>
+                            dispatch(
+                              addToCart({
+                                id: product.id,
+                                title: product.title,
+                                price: product.price,
+                                image: product.image,
+                              }),
+                            )
+                          }
+                        >
+                          Add to Cart
+                        </Button>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            )}
           </Col>
         </Row>
       </Container>
