@@ -1,16 +1,28 @@
-# React + Vite
+# Advanced FakeStore App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite storefront app with Redux and React Query.
 
-Currently, two official plugins are available:
+## Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Install dependencies:
+	npm install
+2. Start dev server:
+	npm run dev
+3. Build production bundle:
+	npm run build
 
-## React Compiler
+## GitHub Pages Deployment
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Deployment is configured with GitHub Actions in `.github/workflows/deploy.yml`.
 
-## Expanding the ESLint configuration
+Checklist:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Push this repo to GitHub.
+2. In GitHub, open Settings -> Pages.
+3. Set Source to GitHub Actions.
+4. Push to `main` (or run the workflow manually from Actions tab).
+
+The app already uses a GitHub Pages-compatible setup:
+
+1. Vite base path is configured for the repository path.
+2. Routing uses hash-based URLs, so deep links work on static hosting.
