@@ -35,7 +35,7 @@ function AppLayout() {
             to="/"
             className="brand-modern"
           >
-            ✨ FakeStore
+            ✨ FirebaseEcommerce
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="main-nav" />
