@@ -15,13 +15,23 @@ import { db } from "../firebase";
 const PRODUCTS_COLLECTION = "products";
 const ORDERS_COLLECTION = "orders";
 
+function requireFirestore() {
+  if (!db) {
+    throw new Error("Firestore is not configured for this deployment.");
+  }
+}
+
 export async function fetchProducts() {
+  requireFirestore();
+
   const q = query(collection(db, PRODUCTS_COLLECTION), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
 }
 
 export async function fetchProductById(productId) {
+  requireFirestore();
+
   const snapshot = await getDoc(doc(db, PRODUCTS_COLLECTION, productId));
   if (!snapshot.exists()) {
     return null;
@@ -31,6 +41,8 @@ export async function fetchProductById(productId) {
 }
 
 export async function createProduct(productData) {
+  requireFirestore();
+
   const payload = {
     ...productData,
     createdAt: serverTimestamp(),
@@ -42,6 +54,8 @@ export async function createProduct(productData) {
 }
 
 export async function updateProduct(productId, productData) {
+  requireFirestore();
+
   await updateDoc(doc(db, PRODUCTS_COLLECTION, productId), {
     ...productData,
     updatedAt: serverTimestamp(),
@@ -49,10 +63,14 @@ export async function updateProduct(productId, productData) {
 }
 
 export async function deleteProduct(productId) {
+  requireFirestore();
+
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, productId));
 }
 
 export async function createOrder(orderData) {
+  requireFirestore();
+
   const payload = {
     ...orderData,
     createdAt: serverTimestamp(),
