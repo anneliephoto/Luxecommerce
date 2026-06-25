@@ -11,6 +11,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { sampleProducts } from "../data/products";
 
 const PRODUCTS_COLLECTION = "products";
 const ORDERS_COLLECTION = "orders";
@@ -22,22 +23,38 @@ function requireFirestore() {
 }
 
 export async function fetchProducts() {
-  requireFirestore();
+  if (!db) {
+    return sampleProducts;
+  }
 
-  const q = query(collection(db, PRODUCTS_COLLECTION), orderBy("createdAt", "desc"));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+  try {
+    requireFirestore();
+
+    const q = query(collection(db, PRODUCTS_COLLECTION), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+  } catch {
+    return sampleProducts;
+  }
 }
 
 export async function fetchProductById(productId) {
-  requireFirestore();
-
-  const snapshot = await getDoc(doc(db, PRODUCTS_COLLECTION, productId));
-  if (!snapshot.exists()) {
-    return null;
+  if (!db) {
+    return sampleProducts.find((product) => product.id === productId) || null;
   }
 
-  return { id: snapshot.id, ...snapshot.data() };
+  try {
+    requireFirestore();
+
+    const snapshot = await getDoc(doc(db, PRODUCTS_COLLECTION, productId));
+    if (!snapshot.exists()) {
+      return sampleProducts.find((product) => product.id === productId) || null;
+    }
+
+    return { id: snapshot.id, ...snapshot.data() };
+  } catch {
+    return sampleProducts.find((product) => product.id === productId) || null;
+  }
 }
 
 export async function createProduct(productData) {
