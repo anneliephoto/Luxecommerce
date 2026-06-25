@@ -20,6 +20,12 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
@@ -28,7 +34,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!user) {
+    if (!auth || !db || !user) {
       setProfile(null);
       setLoading(false);
       return;
@@ -45,7 +51,15 @@ export function AuthProvider({ children }) {
     return () => unsubscribeProfile();
   }, [user]);
 
+  const requireFirebase = () => {
+    if (!auth || !db) {
+      throw new Error("Firebase is not configured for this deployment.");
+    }
+  };
+
   const syncProfileToFirestore = async (currentUser, overrides = {}) => {
+    requireFirebase();
+
     const profileData = {
       uid: currentUser.uid,
       email: currentUser.email,
@@ -64,6 +78,8 @@ export function AuthProvider({ children }) {
   };
 
   const signup = async (email, password, displayName) => {
+    requireFirebase();
+
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const currentUser = userCredential.user;
 
@@ -81,10 +97,13 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
+    requireFirebase();
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const signInWithGoogle = async () => {
+    requireFirebase();
+
     try {
       await firebaseSignOut(auth);
     } catch {
@@ -106,6 +125,8 @@ export function AuthProvider({ children }) {
   };
 
   const updateUserProfile = async (displayName, address) => {
+    requireFirebase();
+
     const currentUser = auth.currentUser;
 
     if (!currentUser) {
@@ -144,6 +165,8 @@ export function AuthProvider({ children }) {
   };
 
   const deleteUserAccount = async () => {
+    requireFirebase();
+
     const currentUser = auth.currentUser;
 
     if (!currentUser) {
@@ -163,6 +186,10 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    if (!auth) {
+      return;
+    }
+
     await firebaseSignOut(auth);
   };
 

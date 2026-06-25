@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { getApps, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -13,13 +13,30 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "",
 };
 
-if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+const hasFirebaseConfig = Boolean(
+  firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId &&
+    firebaseConfig.appId
+);
+
+let app = null;
+let analytics = null;
+let auth = null;
+let db = null;
+
+if (hasFirebaseConfig) {
+  try {
+    const existingApps = getApps();
+    app = existingApps.length ? existingApps[0] : initializeApp(firebaseConfig);
+    analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
+    auth = getAuth(app);
+    db = getFirestore(app);
+  } catch (error) {
+    console.warn("Firebase initialization failed. Continuing without Firebase features.", error);
+  }
+} else {
   console.warn("Firebase config is incomplete. Create a .env file with your Vite Firebase values.");
 }
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-export { app, analytics, auth, db };
+export { app, analytics, auth, db, hasFirebaseConfig };
