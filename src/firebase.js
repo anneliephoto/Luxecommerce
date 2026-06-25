@@ -20,6 +20,10 @@ const hasFirebaseConfig = Boolean(
     firebaseConfig.appId
 );
 
+const configStatus = hasFirebaseConfig
+  ? "configured"
+  : "missing";
+
 let app = null;
 let analytics = null;
 let auth = null;
@@ -36,7 +40,9 @@ if (hasFirebaseConfig) {
     console.warn("Firebase initialization failed. Continuing without Firebase features.", error);
   }
 } else {
-  console.warn("Firebase config is incomplete. Create a .env file with your Vite Firebase values.");
+  console.warn(
+    `[Firebase] Config is incomplete for this deployment. Expected VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN, VITE_FIREBASE_PROJECT_ID, and VITE_FIREBASE_APP_ID. Current status: ${configStatus}.`
+  );
 }
 
-export { app, analytics, auth, db, hasFirebaseConfig };
+export { app, analytics, auth, db, hasFirebaseConfig, configStatus };
