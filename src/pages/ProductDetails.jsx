@@ -23,9 +23,15 @@ export default function ProductDetails() {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
+    setError(null);
     fetchProductById(id)
       .then((item) => {
         if (!mounted) return;
+        if (!item) {
+          setProduct(null);
+          setError("This product could not be found.");
+          return;
+        }
         setProduct(item);
       })
       .catch((err) => {
@@ -56,7 +62,19 @@ export default function ProductDetails() {
       </Container>
     );
 
-  if (!product) return null;
+  if (!product) {
+    return (
+      <Container className="py-5">
+        <Alert variant="warning">This product could not be found.</Alert>
+        <Button variant="secondary" onClick={() => navigate("/products")}>
+          Back to products
+        </Button>
+      </Container>
+    );
+  }
+
+  const displayPrice = Number(product.price ?? 0);
+  const displayImage = product.image || FALLBACK_IMAGE;
 
   return (
     <Container className="py-5">
@@ -100,8 +118,8 @@ export default function ProductDetails() {
                 addToCart({
                   id: product.id,
                   title: product.title,
-                  price: product.price,
-                  image: product.image,
+                  price: displayPrice,
+                  image: displayImage,
                 }),
               );
               setAdded(true);
@@ -127,7 +145,7 @@ export default function ProductDetails() {
           >
             <img
               className="product-image"
-              src={product.image}
+              src={displayImage}
               alt={product.title}
               style={{ maxWidth: "100%", maxHeight: 320, objectFit: "contain" }}
               onError={(e) => {
@@ -144,7 +162,7 @@ export default function ProductDetails() {
               </Card.Subtitle>
               <Card.Text>{product.description}</Card.Text>
               <div className="d-flex align-items-center justify-content-between">
-                <div className="fs-4 fw-bold">${product.price.toFixed(2)}</div>
+                <div className="fs-4 fw-bold">${displayPrice.toFixed(2)}</div>
               </div>
               {deleteError && (
                 <Alert variant="danger" className="mt-3">

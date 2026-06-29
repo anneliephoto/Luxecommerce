@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { Container, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { createProduct } from "../services/firestore";
 
 export default function AddProduct() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -35,12 +37,17 @@ export default function AddProduct() {
     setLoading(true);
     try {
       const createdProduct = await createProduct(payload);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["products"] }),
+        queryClient.invalidateQueries({ queryKey: ["categories"] }),
+      ]);
       setSuccess(`Product created (id: ${createdProduct.id || "n/a"}).`);
       setTitle("");
       setPrice("");
       setDescription("");
       setCategory("");
       setImageUrl("");
+      navigate("/products");
     } catch (err) {
       setError(err.message || "Failed to create product");
     } finally {

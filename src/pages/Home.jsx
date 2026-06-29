@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   Container,
@@ -30,6 +31,7 @@ function fetchProductsByCategory(category) {
 
 export default function Home() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const {
@@ -106,7 +108,18 @@ export default function Home() {
               <Row className="g-4">
                 {products.map((product) => (
                   <Col key={product.id} xs={12} sm={6} lg={4}>
-                    <Card className="h-100 shadow-sm">
+                    <Card
+                      className="h-100 shadow-sm"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => navigate(`/products/${product.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          navigate(`/products/${product.id}`);
+                        }
+                      }}
+                    >
                       <div
                         className="product-image-container d-flex align-items-center justify-content-center p-3"
                         style={{ height: 220 }}
@@ -127,31 +140,42 @@ export default function Home() {
                         <Card.Title className="fs-6" title={product.title}>
                           {product.title}
                         </Card.Title>
-                        <Card.Text className="mb-1">
+                        <Card.Text className="mb-1 text-black">
                           <strong>Category:</strong> {product.category}
                         </Card.Text>
-                        <Card.Text className="mb-1">
+                        <Card.Text className="mb-1 text-black">
                           <strong>Price:</strong> ${Number(product.price || 0).toFixed(2)}
                         </Card.Text>
                         <Card.Text className="small text-muted mb-3">
                           {product.description}
                         </Card.Text>
-                        <Button
-                          className="mt-auto"
-                          variant="primary"
-                          onClick={() =>
-                            dispatch(
-                              addToCart({
-                                id: product.id,
-                                title: product.title,
-                                price: product.price,
-                                image: product.image,
-                              }),
-                            )
-                          }
-                        >
-                          Add to Cart
-                        </Button>
+                        <div className="d-flex gap-2 mt-auto">
+                          <Button
+                            variant="outline-primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/products/${product.id}`);
+                            }}
+                          >
+                            View
+                          </Button>
+                          <Button
+                            variant="primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(
+                                addToCart({
+                                  id: product.id,
+                                  title: product.title,
+                                  price: product.price,
+                                  image: product.image,
+                                }),
+                              );
+                            }}
+                          >
+                            Add to Cart
+                          </Button>
+                        </div>
                       </Card.Body>
                     </Card>
                   </Col>

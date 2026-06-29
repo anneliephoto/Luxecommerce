@@ -43,14 +43,20 @@ export async function fetchProductById(productId) {
 export async function createProduct(productData) {
   requireFirestore();
 
+  const normalizedPrice = Number(productData?.price);
   const payload = {
     ...productData,
+    title: productData?.title?.trim() || "Untitled Product",
+    description: productData?.description?.trim() || "",
+    category: productData?.category?.trim() || "Uncategorized",
+    image: productData?.image?.trim() || "https://via.placeholder.com/150",
+    price: Number.isFinite(normalizedPrice) ? normalizedPrice : 0,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
 
   const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), payload);
-  return { id: docRef.id, ...productData };
+  return { id: docRef.id, ...payload };
 }
 
 export async function updateProduct(productId, productData) {
