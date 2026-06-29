@@ -37,7 +37,8 @@ function AuthPage() {
       await signInWithGoogle();
       setMessage("Signed in with Google successfully.");
     } catch (err) {
-      setError(err.message || "Google sign-in failed.");
+      const message = err?.message || "Google sign-in failed.";
+      setError(message);
     }
   };
 

@@ -1,28 +1,51 @@
 # Advanced FakeStore App
 
-React + Vite storefront app with Redux and React Query.
+React + Vite storefront app with Redux, React Query, Firebase, and a CI/CD workflow for automated testing and deployment.
+
+## Live Demo
+
+The production build is configured for Vercel deployment. After the Vercel project is connected and the workflow runs successfully, update this link to your deployed app URL:
+
+https://your-vercel-project-name.vercel.app
 
 ## Local Development
 
 1. Install dependencies:
-	npm install
-2. Start dev server:
-	npm run dev
-3. Build production bundle:
-	npm run build
+   npm install
+2. Start the development server:
+   npm run dev
+3. Build the production bundle:
+   npm run build
+4. Run the test suite:
+   npm test
 
-## GitHub Pages Deployment
+## Testing
 
-Deployment is configured with GitHub Actions in `.github/workflows/deploy.yml`.
+The project includes React Testing Library tests for:
 
-Checklist:
+- ConfirmModal rendering and button interactions
+- ProductDetails loading and add-to-cart behavior
+- Cart integration when adding a product
 
-1. Push this repo to GitHub.
-2. In GitHub, open Settings -> Pages.
-3. Set Source to GitHub Actions.
-4. Push to `main` (or run the workflow manually from Actions tab).
+## CI/CD
 
-The app already uses a GitHub Pages-compatible setup:
+GitHub Actions is configured in [.github/workflows/main.yml](.github/workflows/main.yml) to:
 
-1. Vite base path is configured for the repository path.
-2. Routing uses hash-based URLs, so deep links work on static hosting.
+- run on pushes and pull requests to the main branch
+- install dependencies
+- run the Jest test suite
+- build the Vite app
+- deploy to Vercel after CI passes
+
+### Required GitHub Secrets
+
+Add the following repository secrets before enabling the Vercel deploy job:
+
+- VERCEL_TOKEN
+- VERCEL_ORG_ID
+- VERCEL_PROJECT_ID
+
+## Vercel Notes
+
+- The app uses a Vercel-friendly base path in Vite.
+- A SPA fallback is provided in [vercel.json](vercel.json) so deep links work after refresh.

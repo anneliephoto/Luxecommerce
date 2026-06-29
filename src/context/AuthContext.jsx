@@ -112,16 +112,25 @@ export function AuthProvider({ children }) {
 
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account", login_hint: "" });
-    const result = await signInWithPopup(auth, provider);
-    const currentUser = result.user;
 
-    await syncProfileToFirestore(currentUser, {
-      displayName: currentUser.displayName || "",
-      address: "",
-      createdAt: serverTimestamp(),
-    });
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const currentUser = result.user;
 
-    return result;
+      await syncProfileToFirestore(currentUser, {
+        displayName: currentUser.displayName || "",
+        address: "",
+        createdAt: serverTimestamp(),
+      });
+
+      return result;
+    } catch (error) {
+      if (error?.code === "auth/popup-closed-by-user") {
+        throw new Error("Google sign-in was cancelled.");
+      }
+
+      throw error;
+    }
   };
 
   const updateUserProfile = async (displayName, address) => {
