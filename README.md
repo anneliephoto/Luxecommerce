@@ -11,19 +11,19 @@ React + Vite e-commerce storefront with Redux cart state, Firestore-backed produ
 
 ## CI/CD
 
-The repository uses `.github/workflows/main.yml` to:
+The repository includes `.github/workflows/main.yml` for test and deploy automation, and Netlify is connected to the GitHub repo for automatic production deploys.
 
 1. Run Jest tests on every push to `main`.
 2. Build the app after tests pass.
-3. Deploy to Netlify when the required secrets are available.
+3. Deploy to Netlify from the connected GitHub repo.
 
-Required Netlify secrets:
+If you ever choose to deploy through GitHub Actions instead of Netlify's auto-deploy, you will need these secrets:
 
 1. `NETLIFY_AUTH_TOKEN`
 2. `NETLIFY_SITE_ID`
 
-`netlify.toml` is already included, so the site can be deployed from the GitHub Actions workflow or directly from Netlify if needed.
+`netlify.toml` is already included, so the site can be deployed from Netlify directly without any manual secret setup.
 
 ## Live App
 
-Add your deployed app URL here after deployment: [Live E-Commerce App](https://example.com)
+Live app: [https://luxecommerce-store.netlify.app](https://luxecommerce-store.netlify.app)
