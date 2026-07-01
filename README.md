@@ -1,28 +1,29 @@
-# Advanced FakeStore App
+# Luxecommerce
 
-React + Vite storefront app with Redux and React Query.
+React + Vite e-commerce storefront with Redux cart state, Firestore-backed product data, and GitHub Actions CI/CD.
 
 ## Local Development
 
-1. Install dependencies:
-	npm install
-2. Start dev server:
-	npm run dev
-3. Build production bundle:
-	npm run build
+1. Install dependencies: `npm install`
+2. Start the dev server: `npm run dev`
+3. Run tests: `npm test`
+4. Build production bundle: `npm run build`
 
-## GitHub Pages Deployment
+## CI/CD
 
-Deployment is configured with GitHub Actions in `.github/workflows/deploy.yml`.
+The repository uses `.github/workflows/main.yml` to:
 
-Checklist:
+1. Run Jest tests on every push to `main`.
+2. Build the app after tests pass.
+3. Deploy to Netlify when the required secrets are available.
 
-1. Push this repo to GitHub.
-2. In GitHub, open Settings -> Pages.
-3. Set Source to GitHub Actions.
-4. Push to `main` (or run the workflow manually from Actions tab).
+Required Netlify secrets:
 
-The app already uses a GitHub Pages-compatible setup:
+1. `NETLIFY_AUTH_TOKEN`
+2. `NETLIFY_SITE_ID`
 
-1. Vite base path is configured for the repository path.
-2. Routing uses hash-based URLs, so deep links work on static hosting.
+`netlify.toml` is already included, so the site can be deployed from the GitHub Actions workflow or directly from Netlify if needed.
+
+## Live App
+
+Add your deployed app URL here after deployment: [Live E-Commerce App](https://example.com)
