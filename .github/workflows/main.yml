@@ -34,26 +34,41 @@ jobs:
     env:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-    if: ${{ env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != '' }}
 
     steps:
+      - name: Check Netlify deployment secrets
+        id: netlify_secrets
+        run: |
+          if [ -n "$NETLIFY_AUTH_TOKEN" ] && [ -n "$NETLIFY_SITE_ID" ]; then
+            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+            echo "Netlify secrets are missing. Skipping deployment step."
+          fi
+
       - name: Checkout
+        if: steps.netlify_secrets.outputs.has_secrets == 'true'
         uses: actions/checkout@v5
 
       - name: Setup Node
+        if: steps.netlify_secrets.outputs.has_secrets == 'true'
         uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
 
       - name: Install dependencies
+        if: steps.netlify_secrets.outputs.has_secrets == 'true'
         run: npm ci
 
       - name: Build app
+        if: steps.netlify_secrets.outputs.has_secrets == 'true'
         run: npm run build
 
       - name: Install Netlify CLI
+        if: steps.netlify_secrets.outputs.has_secrets == 'true'
         run: npm install --global netlify-cli@latest
 
       - name: Deploy to Netlify
+        if: steps.netlify_secrets.outputs.has_secrets == 'true'
         run: netlify deploy --dir=dist --prod --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN
